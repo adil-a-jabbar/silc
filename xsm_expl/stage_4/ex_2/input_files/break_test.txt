@@ -1,0 +1,13 @@
+decl
+int count;
+enddecl
+
+begin
+count=1;
+while (count>0) do
+    if (count == 5) then break;
+    endif;
+    write (count);
+    count = count+1;
+endwhile;
+end;

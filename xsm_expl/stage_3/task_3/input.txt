@@ -1,0 +1,11 @@
+begin
+read(a);
+read(b);
+c=0;
+s=0;
+while (c!=b) do 
+c=c+1;
+s=s+a;
+endwhile;
+write(s);
+end;

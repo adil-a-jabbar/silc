@@ -1,0 +1,16 @@
+decl
+  int num, sum;
+  str mesg;
+  str hel;
+enddecl
+
+begin
+read(num);
+sum = 0;
+while (num != 0) do
+  sum = sum + num;
+  read(num);
+endwhile;
+write(sum);
+write(mesg);
+end;

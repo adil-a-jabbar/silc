@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "typeinfo": "c",
+        "random": "c",
+        "functionchecks.h": "c",
+        "symboltable.h": "c",
+        "exprtree.h": "c",
+        "stdlib.h": "c"
+    }
+}

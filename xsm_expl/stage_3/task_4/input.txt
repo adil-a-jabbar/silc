@@ -1,0 +1,6 @@
+begin
+a=4;
+if (a/3==2) then 
+write (a);
+endif;
+end;

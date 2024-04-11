@@ -1,0 +1,9 @@
+decl
+  int num[10], sum;
+  str mesg;
+enddecl
+
+begin
+read (num[3]);
+write (num[3]);
+end;
