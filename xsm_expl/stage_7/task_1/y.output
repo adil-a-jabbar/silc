@@ -1,0 +1,3786 @@
+   0  $accept : program $end
+
+   1  program : TypeDefBlock ClassdefBlock GdeclBlock FdefBlock MainBlock
+   2          | TypeDefBlock ClassdefBlock GdeclBlock MainBlock
+
+   3  TypeDefBlock : TYPE TypeDefList ENDTYPE
+   4               |
+
+   5  TypeDefList : TypeDefList TypeDef
+   6              | TypeDef
+
+   7  TypeDef : ID '{' FieldDeclList '}'
+
+   8  FieldDeclList : FieldDeclList FieldDecl
+   9                | FieldDecl
+
+  10  FieldDecl : TypeName ID COLON
+
+  11  ClassdefBlock : CLASS ClassDefList ENDCLASS
+  12                |
+
+  13  ClassDefList : ClassDefList ClassDef
+  14               | ClassDef
+
+  15  ClassDef : Cname '{' DECL Fieldlists MethodDecl ENDDECL MethodDefns '}'
+
+  16  Cname : ID
+
+  17  Fieldlists : Fieldlists Fld
+  18             | Fld
+
+  19  Fld : INT ID COLON
+  20      | STR ID COLON
+  21      | ID ID COLON
+
+  22  MethodDecl : MethodDecl MDecl
+  23             | MDecl
+
+  24  MDecl : ID ID '(' ParamList ')' COLON
+  25        | INT ID '(' ParamList ')' COLON
+  26        | STR ID '(' ParamList ')' COLON
+
+  27  MethodDefns : MethodDefns Fdef
+  28              | Fdef
+
+  29  FieldFunction : SELF '.' ID '(' ArgList ')'
+  30                | ID '.' ID '(' ArgList ')'
+  31                | Field '.' ID '(' ArgList ')'
+
+  32  GdeclBlock : DECL GdeclList ENDDECL
+  33             | DECL ENDDECL
+  34             |
+
+  35  GdeclList : GdeclList GDecl
+  36            | GDecl
+
+  37  GDecl : Type GidList COLON
+
+  38  Type : INT
+  39       | STR
+  40       | ID
+
+  41  GidList : GidList COMMA Gid
+  42          | Gid
+
+  43  Gid : ID
+  44      | ID '[' NUM ']'
+  45      | ID '(' GParamList ')'
+
+  46  FdefBlock : FdefBlock Fdef
+  47            | Fdef
+
+  48  Fdef : Type ID '(' ParamList ')' '{' LdeclBlock Body '}'
+  49       | Type ID '(' ParamList ')' '{' Body '}'
+
+  50  LdeclBlock : DECL LDeclList ENDDECL
+  51             | DECL ENDDECL
+
+  52  LDeclList : LDeclList LDecl
+  53            | LDecl
+
+  54  LDecl : TypeName IdList COLON
+
+  55  IdList : IdList COMMA ID
+  56         | ID
+
+  57  Body : START Slist END
+
+  58  ParamList : ParamList COMMA Param
+  59            | Param
+  60            |
+
+  61  Param : TypeName ID
+
+  62  GParamList : GParamList COMMA GParam
+  63             | GParam
+  64             |
+
+  65  GParam : TypeName ID
+
+  66  MainBlock : INT MAIN '(' ')' '{' LdeclBlock Body '}'
+  67            | INT MAIN '(' ')' '{' Body '}'
+
+  68  Slist : Slist Stmt
+  69        | Stmt
+
+  70  Stmt : InputStmt
+  71       | OutputStmt
+  72       | AsgStmt
+  73       | IfStmt
+  74       | WhileStmt
+  75       | BreakStmt
+  76       | ContinueStmt
+  77       | Retstmt
+  78       | FreeStmt
+
+  79  IfStmt : IF expr THEN Slist ELSE Slist ENDIF COLON
+  80         | IF expr THEN Slist ENDIF COLON
+
+  81  WhileStmt : WHILE expr DO Slist ENDWHILE COLON
+
+  82  InputStmt : READ expr COLON
+
+  83  OutputStmt : WRITE expr COLON
+  84             | WRITE String COLON
+
+  85  AsgStmt : expr ASSG expr COLON
+  86          | expr ASSG String COLON
+
+  87  BreakStmt : BREAK COLON
+
+  88  ContinueStmt : CONT COLON
+
+  89  FreeStmt : FREE expr COLON
+
+  90  Retstmt : RETURN expr COLON
+
+  91  String : '(' STRING_TYPE ')'
+  92         | STRING_TYPE
+
+  93  expr : expr PLUS expr
+  94       | expr MINUS expr
+  95       | expr DIV expr
+  96       | expr MUL expr
+  97       | expr MOD expr
+  98       | '(' expr ')'
+  99       | expr LT expr
+ 100       | expr LE expr
+ 101       | expr GT expr
+ 102       | expr GE expr
+ 103       | expr EQ expr
+ 104       | expr NE expr
+ 105       | expr OR expr
+ 106       | expr AND expr
+ 107       | NUM
+ 108       | NULLVAL
+ 109       | ID
+ 110       | ID '[' expr ']'
+ 111       | ID '(' ')'
+ 112       | ID '(' ArgList ')'
+ 113       | Field
+ 114       | ALLOC '(' ')'
+ 115       | INITIALIZE '(' ')'
+ 116       | FieldFunction
+ 117       | NEW '(' ID ')'
+ 118       | DELETE '(' Field ')'
+
+ 119  Field : Field '.' ID
+ 120        | ID '.' ID
+
+ 121  ArgList : ArgList COMMA expr
+ 122          | expr
+
+ 123  TypeName : INT
+ 124           | STR
+ 125           | ID
+
+state 0
+	$accept : . program $end  (0)
+	TypeDefBlock : .  (4)
+
+	TYPE  shift 1
+	ID  reduce 4
+	INT  reduce 4
+	STR  reduce 4
+	DECL  reduce 4
+	CLASS  reduce 4
+
+	program  goto 2
+	TypeDefBlock  goto 3
+
+
+state 1
+	TypeDefBlock : TYPE . TypeDefList ENDTYPE  (3)
+
+	ID  shift 4
+	.  error
+
+	TypeDefList  goto 5
+	TypeDef  goto 6
+
+
+state 2
+	$accept : program . $end  (0)
+
+	$end  accept
+
+
+state 3
+	program : TypeDefBlock . ClassdefBlock GdeclBlock FdefBlock MainBlock  (1)
+	program : TypeDefBlock . ClassdefBlock GdeclBlock MainBlock  (2)
+	ClassdefBlock : .  (12)
+
+	CLASS  shift 7
+	ID  reduce 12
+	INT  reduce 12
+	STR  reduce 12
+	DECL  reduce 12
+
+	ClassdefBlock  goto 8
+
+
+state 4
+	TypeDef : ID . '{' FieldDeclList '}'  (7)
+
+	'{'  shift 9
+	.  error
+
+
+state 5
+	TypeDefBlock : TYPE TypeDefList . ENDTYPE  (3)
+	TypeDefList : TypeDefList . TypeDef  (5)
+
+	ID  shift 4
+	ENDTYPE  shift 10
+	.  error
+
+	TypeDef  goto 11
+
+
+state 6
+	TypeDefList : TypeDef .  (6)
+
+	.  reduce 6
+
+
+state 7
+	ClassdefBlock : CLASS . ClassDefList ENDCLASS  (11)
+
+	ID  shift 12
+	.  error
+
+	ClassDefList  goto 13
+	ClassDef  goto 14
+	Cname  goto 15
+
+
+state 8
+	program : TypeDefBlock ClassdefBlock . GdeclBlock FdefBlock MainBlock  (1)
+	program : TypeDefBlock ClassdefBlock . GdeclBlock MainBlock  (2)
+	GdeclBlock : .  (34)
+
+	DECL  shift 16
+	ID  reduce 34
+	INT  reduce 34
+	STR  reduce 34
+
+	GdeclBlock  goto 17
+
+
+state 9
+	TypeDef : ID '{' . FieldDeclList '}'  (7)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	.  error
+
+	TypeName  goto 21
+	FieldDeclList  goto 22
+	FieldDecl  goto 23
+
+
+state 10
+	TypeDefBlock : TYPE TypeDefList ENDTYPE .  (3)
+
+	.  reduce 3
+
+
+state 11
+	TypeDefList : TypeDefList TypeDef .  (5)
+
+	.  reduce 5
+
+
+state 12
+	Cname : ID .  (16)
+
+	.  reduce 16
+
+
+state 13
+	ClassdefBlock : CLASS ClassDefList . ENDCLASS  (11)
+	ClassDefList : ClassDefList . ClassDef  (13)
+
+	ID  shift 12
+	ENDCLASS  shift 24
+	.  error
+
+	ClassDef  goto 25
+	Cname  goto 15
+
+
+state 14
+	ClassDefList : ClassDef .  (14)
+
+	.  reduce 14
+
+
+state 15
+	ClassDef : Cname . '{' DECL Fieldlists MethodDecl ENDDECL MethodDefns '}'  (15)
+
+	'{'  shift 26
+	.  error
+
+
+state 16
+	GdeclBlock : DECL . GdeclList ENDDECL  (32)
+	GdeclBlock : DECL . ENDDECL  (33)
+
+	ID  shift 27
+	INT  shift 28
+	STR  shift 29
+	ENDDECL  shift 30
+	.  error
+
+	GdeclList  goto 31
+	Type  goto 32
+	GDecl  goto 33
+
+
+state 17
+	program : TypeDefBlock ClassdefBlock GdeclBlock . FdefBlock MainBlock  (1)
+	program : TypeDefBlock ClassdefBlock GdeclBlock . MainBlock  (2)
+
+	ID  shift 27
+	INT  shift 34
+	STR  shift 29
+	.  error
+
+	FdefBlock  goto 35
+	MainBlock  goto 36
+	Fdef  goto 37
+	Type  goto 38
+
+
+state 18
+	TypeName : ID .  (125)
+
+	.  reduce 125
+
+
+state 19
+	TypeName : INT .  (123)
+
+	.  reduce 123
+
+
+state 20
+	TypeName : STR .  (124)
+
+	.  reduce 124
+
+
+state 21
+	FieldDecl : TypeName . ID COLON  (10)
+
+	ID  shift 39
+	.  error
+
+
+state 22
+	TypeDef : ID '{' FieldDeclList . '}'  (7)
+	FieldDeclList : FieldDeclList . FieldDecl  (8)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	'}'  shift 40
+	.  error
+
+	TypeName  goto 21
+	FieldDecl  goto 41
+
+
+state 23
+	FieldDeclList : FieldDecl .  (9)
+
+	.  reduce 9
+
+
+state 24
+	ClassdefBlock : CLASS ClassDefList ENDCLASS .  (11)
+
+	.  reduce 11
+
+
+state 25
+	ClassDefList : ClassDefList ClassDef .  (13)
+
+	.  reduce 13
+
+
+state 26
+	ClassDef : Cname '{' . DECL Fieldlists MethodDecl ENDDECL MethodDefns '}'  (15)
+
+	DECL  shift 42
+	.  error
+
+
+state 27
+	Type : ID .  (40)
+
+	.  reduce 40
+
+
+state 28
+	Type : INT .  (38)
+
+	.  reduce 38
+
+
+state 29
+	Type : STR .  (39)
+
+	.  reduce 39
+
+
+state 30
+	GdeclBlock : DECL ENDDECL .  (33)
+
+	.  reduce 33
+
+
+state 31
+	GdeclBlock : DECL GdeclList . ENDDECL  (32)
+	GdeclList : GdeclList . GDecl  (35)
+
+	ID  shift 27
+	INT  shift 28
+	STR  shift 29
+	ENDDECL  shift 43
+	.  error
+
+	Type  goto 32
+	GDecl  goto 44
+
+
+state 32
+	GDecl : Type . GidList COLON  (37)
+
+	ID  shift 45
+	.  error
+
+	GidList  goto 46
+	Gid  goto 47
+
+
+state 33
+	GdeclList : GDecl .  (36)
+
+	.  reduce 36
+
+
+state 34
+	Type : INT .  (38)
+	MainBlock : INT . MAIN '(' ')' '{' LdeclBlock Body '}'  (66)
+	MainBlock : INT . MAIN '(' ')' '{' Body '}'  (67)
+
+	MAIN  shift 48
+	ID  reduce 38
+
+
+state 35
+	program : TypeDefBlock ClassdefBlock GdeclBlock FdefBlock . MainBlock  (1)
+	FdefBlock : FdefBlock . Fdef  (46)
+
+	ID  shift 27
+	INT  shift 34
+	STR  shift 29
+	.  error
+
+	MainBlock  goto 49
+	Fdef  goto 50
+	Type  goto 38
+
+
+state 36
+	program : TypeDefBlock ClassdefBlock GdeclBlock MainBlock .  (2)
+
+	.  reduce 2
+
+
+state 37
+	FdefBlock : Fdef .  (47)
+
+	.  reduce 47
+
+
+state 38
+	Fdef : Type . ID '(' ParamList ')' '{' LdeclBlock Body '}'  (48)
+	Fdef : Type . ID '(' ParamList ')' '{' Body '}'  (49)
+
+	ID  shift 51
+	.  error
+
+
+state 39
+	FieldDecl : TypeName ID . COLON  (10)
+
+	COLON  shift 52
+	.  error
+
+
+state 40
+	TypeDef : ID '{' FieldDeclList '}' .  (7)
+
+	.  reduce 7
+
+
+state 41
+	FieldDeclList : FieldDeclList FieldDecl .  (8)
+
+	.  reduce 8
+
+
+state 42
+	ClassDef : Cname '{' DECL . Fieldlists MethodDecl ENDDECL MethodDefns '}'  (15)
+
+	ID  shift 53
+	INT  shift 54
+	STR  shift 55
+	.  error
+
+	Fieldlists  goto 56
+	Fld  goto 57
+
+
+state 43
+	GdeclBlock : DECL GdeclList ENDDECL .  (32)
+
+	.  reduce 32
+
+
+state 44
+	GdeclList : GdeclList GDecl .  (35)
+
+	.  reduce 35
+
+
+state 45
+	Gid : ID .  (43)
+	Gid : ID . '[' NUM ']'  (44)
+	Gid : ID . '(' GParamList ')'  (45)
+
+	'('  shift 58
+	'['  shift 59
+	COLON  reduce 43
+	COMMA  reduce 43
+
+
+state 46
+	GDecl : Type GidList . COLON  (37)
+	GidList : GidList . COMMA Gid  (41)
+
+	COLON  shift 60
+	COMMA  shift 61
+	.  error
+
+
+state 47
+	GidList : Gid .  (42)
+
+	.  reduce 42
+
+
+state 48
+	MainBlock : INT MAIN . '(' ')' '{' LdeclBlock Body '}'  (66)
+	MainBlock : INT MAIN . '(' ')' '{' Body '}'  (67)
+
+	'('  shift 62
+	.  error
+
+
+state 49
+	program : TypeDefBlock ClassdefBlock GdeclBlock FdefBlock MainBlock .  (1)
+
+	.  reduce 1
+
+
+state 50
+	FdefBlock : FdefBlock Fdef .  (46)
+
+	.  reduce 46
+
+
+state 51
+	Fdef : Type ID . '(' ParamList ')' '{' LdeclBlock Body '}'  (48)
+	Fdef : Type ID . '(' ParamList ')' '{' Body '}'  (49)
+
+	'('  shift 63
+	.  error
+
+
+state 52
+	FieldDecl : TypeName ID COLON .  (10)
+
+	.  reduce 10
+
+
+state 53
+	Fld : ID . ID COLON  (21)
+
+	ID  shift 64
+	.  error
+
+
+state 54
+	Fld : INT . ID COLON  (19)
+
+	ID  shift 65
+	.  error
+
+
+state 55
+	Fld : STR . ID COLON  (20)
+
+	ID  shift 66
+	.  error
+
+
+state 56
+	ClassDef : Cname '{' DECL Fieldlists . MethodDecl ENDDECL MethodDefns '}'  (15)
+	Fieldlists : Fieldlists . Fld  (17)
+
+	ID  shift 67
+	INT  shift 68
+	STR  shift 69
+	.  error
+
+	Fld  goto 70
+	MethodDecl  goto 71
+	MDecl  goto 72
+
+
+state 57
+	Fieldlists : Fld .  (18)
+
+	.  reduce 18
+
+
+state 58
+	Gid : ID '(' . GParamList ')'  (45)
+	GParamList : .  (64)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	COMMA  reduce 64
+	')'  reduce 64
+
+	TypeName  goto 73
+	GParamList  goto 74
+	GParam  goto 75
+
+
+state 59
+	Gid : ID '[' . NUM ']'  (44)
+
+	NUM  shift 76
+	.  error
+
+
+state 60
+	GDecl : Type GidList COLON .  (37)
+
+	.  reduce 37
+
+
+state 61
+	GidList : GidList COMMA . Gid  (41)
+
+	ID  shift 45
+	.  error
+
+	Gid  goto 77
+
+
+state 62
+	MainBlock : INT MAIN '(' . ')' '{' LdeclBlock Body '}'  (66)
+	MainBlock : INT MAIN '(' . ')' '{' Body '}'  (67)
+
+	')'  shift 78
+	.  error
+
+
+state 63
+	Fdef : Type ID '(' . ParamList ')' '{' LdeclBlock Body '}'  (48)
+	Fdef : Type ID '(' . ParamList ')' '{' Body '}'  (49)
+	ParamList : .  (60)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	COMMA  reduce 60
+	')'  reduce 60
+
+	TypeName  goto 79
+	ParamList  goto 80
+	Param  goto 81
+
+
+state 64
+	Fld : ID ID . COLON  (21)
+
+	COLON  shift 82
+	.  error
+
+
+state 65
+	Fld : INT ID . COLON  (19)
+
+	COLON  shift 83
+	.  error
+
+
+state 66
+	Fld : STR ID . COLON  (20)
+
+	COLON  shift 84
+	.  error
+
+
+state 67
+	Fld : ID . ID COLON  (21)
+	MDecl : ID . ID '(' ParamList ')' COLON  (24)
+
+	ID  shift 85
+	.  error
+
+
+state 68
+	Fld : INT . ID COLON  (19)
+	MDecl : INT . ID '(' ParamList ')' COLON  (25)
+
+	ID  shift 86
+	.  error
+
+
+state 69
+	Fld : STR . ID COLON  (20)
+	MDecl : STR . ID '(' ParamList ')' COLON  (26)
+
+	ID  shift 87
+	.  error
+
+
+state 70
+	Fieldlists : Fieldlists Fld .  (17)
+
+	.  reduce 17
+
+
+state 71
+	ClassDef : Cname '{' DECL Fieldlists MethodDecl . ENDDECL MethodDefns '}'  (15)
+	MethodDecl : MethodDecl . MDecl  (22)
+
+	ID  shift 88
+	INT  shift 89
+	STR  shift 90
+	ENDDECL  shift 91
+	.  error
+
+	MDecl  goto 92
+
+
+state 72
+	MethodDecl : MDecl .  (23)
+
+	.  reduce 23
+
+
+state 73
+	GParam : TypeName . ID  (65)
+
+	ID  shift 93
+	.  error
+
+
+state 74
+	Gid : ID '(' GParamList . ')'  (45)
+	GParamList : GParamList . COMMA GParam  (62)
+
+	COMMA  shift 94
+	')'  shift 95
+	.  error
+
+
+state 75
+	GParamList : GParam .  (63)
+
+	.  reduce 63
+
+
+state 76
+	Gid : ID '[' NUM . ']'  (44)
+
+	']'  shift 96
+	.  error
+
+
+state 77
+	GidList : GidList COMMA Gid .  (41)
+
+	.  reduce 41
+
+
+state 78
+	MainBlock : INT MAIN '(' ')' . '{' LdeclBlock Body '}'  (66)
+	MainBlock : INT MAIN '(' ')' . '{' Body '}'  (67)
+
+	'{'  shift 97
+	.  error
+
+
+state 79
+	Param : TypeName . ID  (61)
+
+	ID  shift 98
+	.  error
+
+
+state 80
+	Fdef : Type ID '(' ParamList . ')' '{' LdeclBlock Body '}'  (48)
+	Fdef : Type ID '(' ParamList . ')' '{' Body '}'  (49)
+	ParamList : ParamList . COMMA Param  (58)
+
+	COMMA  shift 99
+	')'  shift 100
+	.  error
+
+
+state 81
+	ParamList : Param .  (59)
+
+	.  reduce 59
+
+
+state 82
+	Fld : ID ID COLON .  (21)
+
+	.  reduce 21
+
+
+state 83
+	Fld : INT ID COLON .  (19)
+
+	.  reduce 19
+
+
+state 84
+	Fld : STR ID COLON .  (20)
+
+	.  reduce 20
+
+
+state 85
+	Fld : ID ID . COLON  (21)
+	MDecl : ID ID . '(' ParamList ')' COLON  (24)
+
+	COLON  shift 82
+	'('  shift 101
+	.  error
+
+
+state 86
+	Fld : INT ID . COLON  (19)
+	MDecl : INT ID . '(' ParamList ')' COLON  (25)
+
+	COLON  shift 83
+	'('  shift 102
+	.  error
+
+
+state 87
+	Fld : STR ID . COLON  (20)
+	MDecl : STR ID . '(' ParamList ')' COLON  (26)
+
+	COLON  shift 84
+	'('  shift 103
+	.  error
+
+
+state 88
+	MDecl : ID . ID '(' ParamList ')' COLON  (24)
+
+	ID  shift 104
+	.  error
+
+
+state 89
+	MDecl : INT . ID '(' ParamList ')' COLON  (25)
+
+	ID  shift 105
+	.  error
+
+
+state 90
+	MDecl : STR . ID '(' ParamList ')' COLON  (26)
+
+	ID  shift 106
+	.  error
+
+
+state 91
+	ClassDef : Cname '{' DECL Fieldlists MethodDecl ENDDECL . MethodDefns '}'  (15)
+
+	ID  shift 27
+	INT  shift 28
+	STR  shift 29
+	.  error
+
+	Fdef  goto 107
+	Type  goto 38
+	MethodDefns  goto 108
+
+
+state 92
+	MethodDecl : MethodDecl MDecl .  (22)
+
+	.  reduce 22
+
+
+state 93
+	GParam : TypeName ID .  (65)
+
+	.  reduce 65
+
+
+state 94
+	GParamList : GParamList COMMA . GParam  (62)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	.  error
+
+	TypeName  goto 73
+	GParam  goto 109
+
+
+state 95
+	Gid : ID '(' GParamList ')' .  (45)
+
+	.  reduce 45
+
+
+state 96
+	Gid : ID '[' NUM ']' .  (44)
+
+	.  reduce 44
+
+
+state 97
+	MainBlock : INT MAIN '(' ')' '{' . LdeclBlock Body '}'  (66)
+	MainBlock : INT MAIN '(' ')' '{' . Body '}'  (67)
+
+	START  shift 110
+	DECL  shift 111
+	.  error
+
+	LdeclBlock  goto 112
+	Body  goto 113
+
+
+state 98
+	Param : TypeName ID .  (61)
+
+	.  reduce 61
+
+
+state 99
+	ParamList : ParamList COMMA . Param  (58)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	.  error
+
+	TypeName  goto 79
+	Param  goto 114
+
+
+state 100
+	Fdef : Type ID '(' ParamList ')' . '{' LdeclBlock Body '}'  (48)
+	Fdef : Type ID '(' ParamList ')' . '{' Body '}'  (49)
+
+	'{'  shift 115
+	.  error
+
+
+state 101
+	MDecl : ID ID '(' . ParamList ')' COLON  (24)
+	ParamList : .  (60)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	COMMA  reduce 60
+	')'  reduce 60
+
+	TypeName  goto 79
+	ParamList  goto 116
+	Param  goto 81
+
+
+state 102
+	MDecl : INT ID '(' . ParamList ')' COLON  (25)
+	ParamList : .  (60)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	COMMA  reduce 60
+	')'  reduce 60
+
+	TypeName  goto 79
+	ParamList  goto 117
+	Param  goto 81
+
+
+state 103
+	MDecl : STR ID '(' . ParamList ')' COLON  (26)
+	ParamList : .  (60)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	COMMA  reduce 60
+	')'  reduce 60
+
+	TypeName  goto 79
+	ParamList  goto 118
+	Param  goto 81
+
+
+state 104
+	MDecl : ID ID . '(' ParamList ')' COLON  (24)
+
+	'('  shift 101
+	.  error
+
+
+state 105
+	MDecl : INT ID . '(' ParamList ')' COLON  (25)
+
+	'('  shift 102
+	.  error
+
+
+state 106
+	MDecl : STR ID . '(' ParamList ')' COLON  (26)
+
+	'('  shift 103
+	.  error
+
+
+state 107
+	MethodDefns : Fdef .  (28)
+
+	.  reduce 28
+
+
+state 108
+	ClassDef : Cname '{' DECL Fieldlists MethodDecl ENDDECL MethodDefns . '}'  (15)
+	MethodDefns : MethodDefns . Fdef  (27)
+
+	ID  shift 27
+	INT  shift 28
+	STR  shift 29
+	'}'  shift 119
+	.  error
+
+	Fdef  goto 120
+	Type  goto 38
+
+
+state 109
+	GParamList : GParamList COMMA GParam .  (62)
+
+	.  reduce 62
+
+
+state 110
+	Body : START . Slist END  (57)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Slist  goto 139
+	Stmt  goto 140
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 111
+	LdeclBlock : DECL . LDeclList ENDDECL  (50)
+	LdeclBlock : DECL . ENDDECL  (51)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	ENDDECL  shift 152
+	.  error
+
+	TypeName  goto 153
+	LDeclList  goto 154
+	LDecl  goto 155
+
+
+state 112
+	MainBlock : INT MAIN '(' ')' '{' LdeclBlock . Body '}'  (66)
+
+	START  shift 110
+	.  error
+
+	Body  goto 156
+
+
+state 113
+	MainBlock : INT MAIN '(' ')' '{' Body . '}'  (67)
+
+	'}'  shift 157
+	.  error
+
+
+state 114
+	ParamList : ParamList COMMA Param .  (58)
+
+	.  reduce 58
+
+
+state 115
+	Fdef : Type ID '(' ParamList ')' '{' . LdeclBlock Body '}'  (48)
+	Fdef : Type ID '(' ParamList ')' '{' . Body '}'  (49)
+
+	START  shift 110
+	DECL  shift 111
+	.  error
+
+	LdeclBlock  goto 158
+	Body  goto 159
+
+
+state 116
+	MDecl : ID ID '(' ParamList . ')' COLON  (24)
+	ParamList : ParamList . COMMA Param  (58)
+
+	COMMA  shift 99
+	')'  shift 160
+	.  error
+
+
+state 117
+	MDecl : INT ID '(' ParamList . ')' COLON  (25)
+	ParamList : ParamList . COMMA Param  (58)
+
+	COMMA  shift 99
+	')'  shift 161
+	.  error
+
+
+state 118
+	MDecl : STR ID '(' ParamList . ')' COLON  (26)
+	ParamList : ParamList . COMMA Param  (58)
+
+	COMMA  shift 99
+	')'  shift 162
+	.  error
+
+
+state 119
+	ClassDef : Cname '{' DECL Fieldlists MethodDecl ENDDECL MethodDefns '}' .  (15)
+
+	.  reduce 15
+
+
+state 120
+	MethodDefns : MethodDefns Fdef .  (27)
+
+	.  reduce 27
+
+
+state 121
+	expr : NUM .  (107)
+
+	.  reduce 107
+
+
+state 122
+	FieldFunction : ID . '.' ID '(' ArgList ')'  (30)
+	expr : ID .  (109)
+	expr : ID . '[' expr ']'  (110)
+	expr : ID . '(' ')'  (111)
+	expr : ID . '(' ArgList ')'  (112)
+	Field : ID . '.' ID  (120)
+
+	'('  shift 163
+	'.'  shift 164
+	'['  shift 165
+	PLUS  reduce 109
+	MINUS  reduce 109
+	MUL  reduce 109
+	DIV  reduce 109
+	MOD  reduce 109
+	ASSG  reduce 109
+	COLON  reduce 109
+	LT  reduce 109
+	LE  reduce 109
+	GT  reduce 109
+	GE  reduce 109
+	EQ  reduce 109
+	NE  reduce 109
+	OR  reduce 109
+	AND  reduce 109
+	THEN  reduce 109
+	DO  reduce 109
+	COMMA  reduce 109
+	')'  reduce 109
+	']'  reduce 109
+
+
+state 123
+	expr : ALLOC . '(' ')'  (114)
+
+	'('  shift 166
+	.  error
+
+
+state 124
+	expr : INITIALIZE . '(' ')'  (115)
+
+	'('  shift 167
+	.  error
+
+
+state 125
+	FreeStmt : FREE . expr COLON  (89)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 168
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 126
+	expr : NULLVAL .  (108)
+
+	.  reduce 108
+
+
+state 127
+	InputStmt : READ . expr COLON  (82)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 169
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 128
+	OutputStmt : WRITE . expr COLON  (83)
+	OutputStmt : WRITE . String COLON  (84)
+
+	NUM  shift 121
+	ID  shift 122
+	STRING_TYPE  shift 170
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 171
+	.  error
+
+	expr  goto 172
+	String  goto 173
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 129
+	IfStmt : IF . expr THEN Slist ELSE Slist ENDIF COLON  (79)
+	IfStmt : IF . expr THEN Slist ENDIF COLON  (80)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 174
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 130
+	WhileStmt : WHILE . expr DO Slist ENDWHILE COLON  (81)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 175
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 131
+	BreakStmt : BREAK . COLON  (87)
+
+	COLON  shift 176
+	.  error
+
+
+state 132
+	ContinueStmt : CONT . COLON  (88)
+
+	COLON  shift 177
+	.  error
+
+
+state 133
+	Retstmt : RETURN . expr COLON  (90)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 178
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 134
+	FieldFunction : SELF . '.' ID '(' ArgList ')'  (29)
+
+	'.'  shift 179
+	.  error
+
+
+state 135
+	expr : DELETE . '(' Field ')'  (118)
+
+	'('  shift 180
+	.  error
+
+
+state 136
+	expr : NEW . '(' ID ')'  (117)
+
+	'('  shift 181
+	.  error
+
+
+state 137
+	expr : '(' . expr ')'  (98)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 182
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 138
+	AsgStmt : expr . ASSG expr COLON  (85)
+	AsgStmt : expr . ASSG String COLON  (86)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  shift 188
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 139
+	Body : START Slist . END  (57)
+	Slist : Slist . Stmt  (68)
+
+	NUM  shift 121
+	END  shift 197
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Stmt  goto 198
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 140
+	Slist : Stmt .  (69)
+
+	.  reduce 69
+
+
+state 141
+	Stmt : InputStmt .  (70)
+
+	.  reduce 70
+
+
+state 142
+	Stmt : OutputStmt .  (71)
+
+	.  reduce 71
+
+
+state 143
+	Stmt : AsgStmt .  (72)
+
+	.  reduce 72
+
+
+state 144
+	Stmt : IfStmt .  (73)
+
+	.  reduce 73
+
+
+state 145
+	Stmt : WhileStmt .  (74)
+
+	.  reduce 74
+
+
+state 146
+	Stmt : BreakStmt .  (75)
+
+	.  reduce 75
+
+
+state 147
+	Stmt : ContinueStmt .  (76)
+
+	.  reduce 76
+
+
+state 148
+	Stmt : FreeStmt .  (78)
+
+	.  reduce 78
+
+
+state 149
+	Stmt : Retstmt .  (77)
+
+	.  reduce 77
+
+
+state 150
+	FieldFunction : Field . '.' ID '(' ArgList ')'  (31)
+	expr : Field .  (113)
+	Field : Field . '.' ID  (119)
+
+	'.'  shift 199
+	PLUS  reduce 113
+	MINUS  reduce 113
+	MUL  reduce 113
+	DIV  reduce 113
+	MOD  reduce 113
+	ASSG  reduce 113
+	COLON  reduce 113
+	LT  reduce 113
+	LE  reduce 113
+	GT  reduce 113
+	GE  reduce 113
+	EQ  reduce 113
+	NE  reduce 113
+	OR  reduce 113
+	AND  reduce 113
+	THEN  reduce 113
+	DO  reduce 113
+	COMMA  reduce 113
+	')'  reduce 113
+	']'  reduce 113
+
+
+state 151
+	expr : FieldFunction .  (116)
+
+	.  reduce 116
+
+
+state 152
+	LdeclBlock : DECL ENDDECL .  (51)
+
+	.  reduce 51
+
+
+state 153
+	LDecl : TypeName . IdList COLON  (54)
+
+	ID  shift 200
+	.  error
+
+	IdList  goto 201
+
+
+state 154
+	LdeclBlock : DECL LDeclList . ENDDECL  (50)
+	LDeclList : LDeclList . LDecl  (52)
+
+	ID  shift 18
+	INT  shift 19
+	STR  shift 20
+	ENDDECL  shift 202
+	.  error
+
+	TypeName  goto 153
+	LDecl  goto 203
+
+
+state 155
+	LDeclList : LDecl .  (53)
+
+	.  reduce 53
+
+
+state 156
+	MainBlock : INT MAIN '(' ')' '{' LdeclBlock Body . '}'  (66)
+
+	'}'  shift 204
+	.  error
+
+
+state 157
+	MainBlock : INT MAIN '(' ')' '{' Body '}' .  (67)
+
+	.  reduce 67
+
+
+state 158
+	Fdef : Type ID '(' ParamList ')' '{' LdeclBlock . Body '}'  (48)
+
+	START  shift 110
+	.  error
+
+	Body  goto 205
+
+
+state 159
+	Fdef : Type ID '(' ParamList ')' '{' Body . '}'  (49)
+
+	'}'  shift 206
+	.  error
+
+
+state 160
+	MDecl : ID ID '(' ParamList ')' . COLON  (24)
+
+	COLON  shift 207
+	.  error
+
+
+state 161
+	MDecl : INT ID '(' ParamList ')' . COLON  (25)
+
+	COLON  shift 208
+	.  error
+
+
+state 162
+	MDecl : STR ID '(' ParamList ')' . COLON  (26)
+
+	COLON  shift 209
+	.  error
+
+
+state 163
+	expr : ID '(' . ')'  (111)
+	expr : ID '(' . ArgList ')'  (112)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	')'  shift 210
+	.  error
+
+	expr  goto 211
+	ArgList  goto 212
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 164
+	FieldFunction : ID '.' . ID '(' ArgList ')'  (30)
+	Field : ID '.' . ID  (120)
+
+	ID  shift 213
+	.  error
+
+
+state 165
+	expr : ID '[' . expr ']'  (110)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 214
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 166
+	expr : ALLOC '(' . ')'  (114)
+
+	')'  shift 215
+	.  error
+
+
+state 167
+	expr : INITIALIZE '(' . ')'  (115)
+
+	')'  shift 216
+	.  error
+
+
+state 168
+	FreeStmt : FREE expr . COLON  (89)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	COLON  shift 217
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 169
+	InputStmt : READ expr . COLON  (82)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	COLON  shift 218
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 170
+	String : STRING_TYPE .  (92)
+
+	.  reduce 92
+
+
+state 171
+	String : '(' . STRING_TYPE ')'  (91)
+	expr : '(' . expr ')'  (98)
+
+	NUM  shift 121
+	ID  shift 122
+	STRING_TYPE  shift 219
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 182
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 172
+	OutputStmt : WRITE expr . COLON  (83)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	COLON  shift 220
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 173
+	OutputStmt : WRITE String . COLON  (84)
+
+	COLON  shift 221
+	.  error
+
+
+state 174
+	IfStmt : IF expr . THEN Slist ELSE Slist ENDIF COLON  (79)
+	IfStmt : IF expr . THEN Slist ENDIF COLON  (80)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	THEN  shift 222
+	.  error
+
+
+state 175
+	WhileStmt : WHILE expr . DO Slist ENDWHILE COLON  (81)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	DO  shift 223
+	.  error
+
+
+state 176
+	BreakStmt : BREAK COLON .  (87)
+
+	.  reduce 87
+
+
+state 177
+	ContinueStmt : CONT COLON .  (88)
+
+	.  reduce 88
+
+
+state 178
+	Retstmt : RETURN expr . COLON  (90)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	COLON  shift 224
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 179
+	FieldFunction : SELF '.' . ID '(' ArgList ')'  (29)
+
+	ID  shift 225
+	.  error
+
+
+state 180
+	expr : DELETE '(' . Field ')'  (118)
+
+	ID  shift 226
+	.  error
+
+	Field  goto 227
+
+
+state 181
+	expr : NEW '(' . ID ')'  (117)
+
+	ID  shift 228
+	.  error
+
+
+state 182
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : '(' expr . ')'  (98)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	')'  shift 229
+	.  error
+
+
+state 183
+	expr : expr PLUS . expr  (93)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 230
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 184
+	expr : expr MINUS . expr  (94)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 231
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 185
+	expr : expr MUL . expr  (96)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 232
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 186
+	expr : expr DIV . expr  (95)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 233
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 187
+	expr : expr MOD . expr  (97)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 234
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 188
+	AsgStmt : expr ASSG . expr COLON  (85)
+	AsgStmt : expr ASSG . String COLON  (86)
+
+	NUM  shift 121
+	ID  shift 122
+	STRING_TYPE  shift 170
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 171
+	.  error
+
+	expr  goto 235
+	String  goto 236
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 189
+	expr : expr LT . expr  (99)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 237
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 190
+	expr : expr LE . expr  (100)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 238
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 191
+	expr : expr GT . expr  (101)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 239
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 192
+	expr : expr GE . expr  (102)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 240
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 193
+	expr : expr EQ . expr  (103)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 241
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 194
+	expr : expr NE . expr  (104)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 242
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 195
+	expr : expr OR . expr  (105)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 243
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 196
+	expr : expr AND . expr  (106)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 244
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 197
+	Body : START Slist END .  (57)
+
+	.  reduce 57
+
+
+state 198
+	Slist : Slist Stmt .  (68)
+
+	.  reduce 68
+
+
+state 199
+	FieldFunction : Field '.' . ID '(' ArgList ')'  (31)
+	Field : Field '.' . ID  (119)
+
+	ID  shift 245
+	.  error
+
+
+state 200
+	IdList : ID .  (56)
+
+	.  reduce 56
+
+
+state 201
+	LDecl : TypeName IdList . COLON  (54)
+	IdList : IdList . COMMA ID  (55)
+
+	COLON  shift 246
+	COMMA  shift 247
+	.  error
+
+
+state 202
+	LdeclBlock : DECL LDeclList ENDDECL .  (50)
+
+	.  reduce 50
+
+
+state 203
+	LDeclList : LDeclList LDecl .  (52)
+
+	.  reduce 52
+
+
+state 204
+	MainBlock : INT MAIN '(' ')' '{' LdeclBlock Body '}' .  (66)
+
+	.  reduce 66
+
+
+state 205
+	Fdef : Type ID '(' ParamList ')' '{' LdeclBlock Body . '}'  (48)
+
+	'}'  shift 248
+	.  error
+
+
+state 206
+	Fdef : Type ID '(' ParamList ')' '{' Body '}' .  (49)
+
+	.  reduce 49
+
+
+state 207
+	MDecl : ID ID '(' ParamList ')' COLON .  (24)
+
+	.  reduce 24
+
+
+state 208
+	MDecl : INT ID '(' ParamList ')' COLON .  (25)
+
+	.  reduce 25
+
+
+state 209
+	MDecl : STR ID '(' ParamList ')' COLON .  (26)
+
+	.  reduce 26
+
+
+state 210
+	expr : ID '(' ')' .  (111)
+
+	.  reduce 111
+
+
+state 211
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+	ArgList : expr .  (122)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	COMMA  reduce 122
+	')'  reduce 122
+
+
+state 212
+	expr : ID '(' ArgList . ')'  (112)
+	ArgList : ArgList . COMMA expr  (121)
+
+	COMMA  shift 249
+	')'  shift 250
+	.  error
+
+
+state 213
+	FieldFunction : ID '.' ID . '(' ArgList ')'  (30)
+	Field : ID '.' ID .  (120)
+
+	'('  shift 251
+	PLUS  reduce 120
+	MINUS  reduce 120
+	MUL  reduce 120
+	DIV  reduce 120
+	MOD  reduce 120
+	ASSG  reduce 120
+	COLON  reduce 120
+	LT  reduce 120
+	LE  reduce 120
+	GT  reduce 120
+	GE  reduce 120
+	EQ  reduce 120
+	NE  reduce 120
+	OR  reduce 120
+	AND  reduce 120
+	THEN  reduce 120
+	DO  reduce 120
+	COMMA  reduce 120
+	')'  reduce 120
+	'.'  reduce 120
+	']'  reduce 120
+
+
+state 214
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+	expr : ID '[' expr . ']'  (110)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	']'  shift 252
+	.  error
+
+
+state 215
+	expr : ALLOC '(' ')' .  (114)
+
+	.  reduce 114
+
+
+state 216
+	expr : INITIALIZE '(' ')' .  (115)
+
+	.  reduce 115
+
+
+state 217
+	FreeStmt : FREE expr COLON .  (89)
+
+	.  reduce 89
+
+
+state 218
+	InputStmt : READ expr COLON .  (82)
+
+	.  reduce 82
+
+
+state 219
+	String : '(' STRING_TYPE . ')'  (91)
+
+	')'  shift 253
+	.  error
+
+
+state 220
+	OutputStmt : WRITE expr COLON .  (83)
+
+	.  reduce 83
+
+
+state 221
+	OutputStmt : WRITE String COLON .  (84)
+
+	.  reduce 84
+
+
+state 222
+	IfStmt : IF expr THEN . Slist ELSE Slist ENDIF COLON  (79)
+	IfStmt : IF expr THEN . Slist ENDIF COLON  (80)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Slist  goto 254
+	Stmt  goto 140
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 223
+	WhileStmt : WHILE expr DO . Slist ENDWHILE COLON  (81)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Slist  goto 255
+	Stmt  goto 140
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 224
+	Retstmt : RETURN expr COLON .  (90)
+
+	.  reduce 90
+
+
+state 225
+	FieldFunction : SELF '.' ID . '(' ArgList ')'  (29)
+
+	'('  shift 256
+	.  error
+
+
+state 226
+	Field : ID . '.' ID  (120)
+
+	'.'  shift 257
+	.  error
+
+
+state 227
+	expr : DELETE '(' Field . ')'  (118)
+	Field : Field . '.' ID  (119)
+
+	')'  shift 258
+	'.'  shift 259
+	.  error
+
+
+state 228
+	expr : NEW '(' ID . ')'  (117)
+
+	')'  shift 260
+	.  error
+
+
+state 229
+	expr : '(' expr ')' .  (98)
+
+	.  reduce 98
+
+
+state 230
+	expr : expr . PLUS expr  (93)
+	expr : expr PLUS expr .  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	MUL  shift 185
+	DIV  shift 186
+	PLUS  reduce 93
+	MINUS  reduce 93
+	MOD  reduce 93
+	ASSG  reduce 93
+	COLON  reduce 93
+	LT  reduce 93
+	LE  reduce 93
+	GT  reduce 93
+	GE  reduce 93
+	EQ  reduce 93
+	NE  reduce 93
+	OR  reduce 93
+	AND  reduce 93
+	THEN  reduce 93
+	DO  reduce 93
+	COMMA  reduce 93
+	')'  reduce 93
+	']'  reduce 93
+
+
+state 231
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr MINUS expr .  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	MUL  shift 185
+	DIV  shift 186
+	PLUS  reduce 94
+	MINUS  reduce 94
+	MOD  reduce 94
+	ASSG  reduce 94
+	COLON  reduce 94
+	LT  reduce 94
+	LE  reduce 94
+	GT  reduce 94
+	GE  reduce 94
+	EQ  reduce 94
+	NE  reduce 94
+	OR  reduce 94
+	AND  reduce 94
+	THEN  reduce 94
+	DO  reduce 94
+	COMMA  reduce 94
+	')'  reduce 94
+	']'  reduce 94
+
+
+state 232
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr MUL expr .  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	.  reduce 96
+
+
+state 233
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr DIV expr .  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	.  reduce 95
+
+
+state 234
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr MOD expr .  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	MUL  shift 185
+	DIV  shift 186
+	PLUS  reduce 97
+	MINUS  reduce 97
+	MOD  reduce 97
+	ASSG  reduce 97
+	COLON  reduce 97
+	LT  reduce 97
+	LE  reduce 97
+	GT  reduce 97
+	GE  reduce 97
+	EQ  reduce 97
+	NE  reduce 97
+	OR  reduce 97
+	AND  reduce 97
+	THEN  reduce 97
+	DO  reduce 97
+	COMMA  reduce 97
+	')'  reduce 97
+	']'  reduce 97
+
+
+state 235
+	AsgStmt : expr ASSG expr . COLON  (85)
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	COLON  shift 261
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	.  error
+
+
+state 236
+	AsgStmt : expr ASSG String . COLON  (86)
+
+	COLON  shift 262
+	.  error
+
+
+state 237
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr LT expr .  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 99
+	COLON  reduce 99
+	LT  reduce 99
+	LE  reduce 99
+	GT  reduce 99
+	GE  reduce 99
+	EQ  reduce 99
+	NE  reduce 99
+	OR  reduce 99
+	AND  reduce 99
+	THEN  reduce 99
+	DO  reduce 99
+	COMMA  reduce 99
+	')'  reduce 99
+	']'  reduce 99
+
+
+state 238
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr LE expr .  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 100
+	COLON  reduce 100
+	LT  reduce 100
+	LE  reduce 100
+	GT  reduce 100
+	GE  reduce 100
+	EQ  reduce 100
+	NE  reduce 100
+	OR  reduce 100
+	AND  reduce 100
+	THEN  reduce 100
+	DO  reduce 100
+	COMMA  reduce 100
+	')'  reduce 100
+	']'  reduce 100
+
+
+state 239
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr GT expr .  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 101
+	COLON  reduce 101
+	LT  reduce 101
+	LE  reduce 101
+	GT  reduce 101
+	GE  reduce 101
+	EQ  reduce 101
+	NE  reduce 101
+	OR  reduce 101
+	AND  reduce 101
+	THEN  reduce 101
+	DO  reduce 101
+	COMMA  reduce 101
+	')'  reduce 101
+	']'  reduce 101
+
+
+state 240
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr GE expr .  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 102
+	COLON  reduce 102
+	LT  reduce 102
+	LE  reduce 102
+	GT  reduce 102
+	GE  reduce 102
+	EQ  reduce 102
+	NE  reduce 102
+	OR  reduce 102
+	AND  reduce 102
+	THEN  reduce 102
+	DO  reduce 102
+	COMMA  reduce 102
+	')'  reduce 102
+	']'  reduce 102
+
+
+state 241
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr EQ expr .  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 103
+	COLON  reduce 103
+	LT  reduce 103
+	LE  reduce 103
+	GT  reduce 103
+	GE  reduce 103
+	EQ  reduce 103
+	NE  reduce 103
+	OR  reduce 103
+	AND  reduce 103
+	THEN  reduce 103
+	DO  reduce 103
+	COMMA  reduce 103
+	')'  reduce 103
+	']'  reduce 103
+
+
+state 242
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr NE expr .  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	ASSG  reduce 104
+	COLON  reduce 104
+	LT  reduce 104
+	LE  reduce 104
+	GT  reduce 104
+	GE  reduce 104
+	EQ  reduce 104
+	NE  reduce 104
+	OR  reduce 104
+	AND  reduce 104
+	THEN  reduce 104
+	DO  reduce 104
+	COMMA  reduce 104
+	')'  reduce 104
+	']'  reduce 104
+
+
+state 243
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr OR expr .  (105)
+	expr : expr . AND expr  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	ASSG  reduce 105
+	COLON  reduce 105
+	OR  reduce 105
+	AND  reduce 105
+	THEN  reduce 105
+	DO  reduce 105
+	COMMA  reduce 105
+	')'  reduce 105
+	']'  reduce 105
+
+
+state 244
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+	expr : expr AND expr .  (106)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	ASSG  reduce 106
+	COLON  reduce 106
+	OR  reduce 106
+	AND  reduce 106
+	THEN  reduce 106
+	DO  reduce 106
+	COMMA  reduce 106
+	')'  reduce 106
+	']'  reduce 106
+
+
+state 245
+	FieldFunction : Field '.' ID . '(' ArgList ')'  (31)
+	Field : Field '.' ID .  (119)
+
+	'('  shift 263
+	PLUS  reduce 119
+	MINUS  reduce 119
+	MUL  reduce 119
+	DIV  reduce 119
+	MOD  reduce 119
+	ASSG  reduce 119
+	COLON  reduce 119
+	LT  reduce 119
+	LE  reduce 119
+	GT  reduce 119
+	GE  reduce 119
+	EQ  reduce 119
+	NE  reduce 119
+	OR  reduce 119
+	AND  reduce 119
+	THEN  reduce 119
+	DO  reduce 119
+	COMMA  reduce 119
+	')'  reduce 119
+	'.'  reduce 119
+	']'  reduce 119
+
+
+state 246
+	LDecl : TypeName IdList COLON .  (54)
+
+	.  reduce 54
+
+
+state 247
+	IdList : IdList COMMA . ID  (55)
+
+	ID  shift 264
+	.  error
+
+
+state 248
+	Fdef : Type ID '(' ParamList ')' '{' LdeclBlock Body '}' .  (48)
+
+	.  reduce 48
+
+
+state 249
+	ArgList : ArgList COMMA . expr  (121)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 265
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 250
+	expr : ID '(' ArgList ')' .  (112)
+
+	.  reduce 112
+
+
+state 251
+	FieldFunction : ID '.' ID '(' . ArgList ')'  (30)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 211
+	ArgList  goto 266
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 252
+	expr : ID '[' expr ']' .  (110)
+
+	.  reduce 110
+
+
+state 253
+	String : '(' STRING_TYPE ')' .  (91)
+
+	.  reduce 91
+
+
+state 254
+	Slist : Slist . Stmt  (68)
+	IfStmt : IF expr THEN Slist . ELSE Slist ENDIF COLON  (79)
+	IfStmt : IF expr THEN Slist . ENDIF COLON  (80)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	ELSE  shift 267
+	ENDIF  shift 268
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Stmt  goto 198
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 255
+	Slist : Slist . Stmt  (68)
+	WhileStmt : WHILE expr DO Slist . ENDWHILE COLON  (81)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	ENDWHILE  shift 269
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Stmt  goto 198
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 256
+	FieldFunction : SELF '.' ID '(' . ArgList ')'  (29)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 211
+	ArgList  goto 270
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 257
+	Field : ID '.' . ID  (120)
+
+	ID  shift 271
+	.  error
+
+
+state 258
+	expr : DELETE '(' Field ')' .  (118)
+
+	.  reduce 118
+
+
+state 259
+	Field : Field '.' . ID  (119)
+
+	ID  shift 272
+	.  error
+
+
+state 260
+	expr : NEW '(' ID ')' .  (117)
+
+	.  reduce 117
+
+
+state 261
+	AsgStmt : expr ASSG expr COLON .  (85)
+
+	.  reduce 85
+
+
+state 262
+	AsgStmt : expr ASSG String COLON .  (86)
+
+	.  reduce 86
+
+
+state 263
+	FieldFunction : Field '.' ID '(' . ArgList ')'  (31)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	NULLVAL  shift 126
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 211
+	ArgList  goto 273
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 264
+	IdList : IdList COMMA ID .  (55)
+
+	.  reduce 55
+
+
+state 265
+	expr : expr . PLUS expr  (93)
+	expr : expr . MINUS expr  (94)
+	expr : expr . DIV expr  (95)
+	expr : expr . MUL expr  (96)
+	expr : expr . MOD expr  (97)
+	expr : expr . LT expr  (99)
+	expr : expr . LE expr  (100)
+	expr : expr . GT expr  (101)
+	expr : expr . GE expr  (102)
+	expr : expr . EQ expr  (103)
+	expr : expr . NE expr  (104)
+	expr : expr . OR expr  (105)
+	expr : expr . AND expr  (106)
+	ArgList : ArgList COMMA expr .  (121)
+
+	PLUS  shift 183
+	MINUS  shift 184
+	MUL  shift 185
+	DIV  shift 186
+	MOD  shift 187
+	LT  shift 189
+	LE  shift 190
+	GT  shift 191
+	GE  shift 192
+	EQ  shift 193
+	NE  shift 194
+	OR  shift 195
+	AND  shift 196
+	COMMA  reduce 121
+	')'  reduce 121
+
+
+state 266
+	FieldFunction : ID '.' ID '(' ArgList . ')'  (30)
+	ArgList : ArgList . COMMA expr  (121)
+
+	COMMA  shift 249
+	')'  shift 274
+	.  error
+
+
+state 267
+	IfStmt : IF expr THEN Slist ELSE . Slist ENDIF COLON  (79)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Slist  goto 275
+	Stmt  goto 140
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 268
+	IfStmt : IF expr THEN Slist ENDIF . COLON  (80)
+
+	COLON  shift 276
+	.  error
+
+
+state 269
+	WhileStmt : WHILE expr DO Slist ENDWHILE . COLON  (81)
+
+	COLON  shift 277
+	.  error
+
+
+state 270
+	FieldFunction : SELF '.' ID '(' ArgList . ')'  (29)
+	ArgList : ArgList . COMMA expr  (121)
+
+	COMMA  shift 249
+	')'  shift 278
+	.  error
+
+
+state 271
+	Field : ID '.' ID .  (120)
+
+	.  reduce 120
+
+
+state 272
+	Field : Field '.' ID .  (119)
+
+	.  reduce 119
+
+
+state 273
+	FieldFunction : Field '.' ID '(' ArgList . ')'  (31)
+	ArgList : ArgList . COMMA expr  (121)
+
+	COMMA  shift 249
+	')'  shift 279
+	.  error
+
+
+state 274
+	FieldFunction : ID '.' ID '(' ArgList ')' .  (30)
+
+	.  reduce 30
+
+
+state 275
+	Slist : Slist . Stmt  (68)
+	IfStmt : IF expr THEN Slist ELSE Slist . ENDIF COLON  (79)
+
+	NUM  shift 121
+	ID  shift 122
+	ALLOC  shift 123
+	INITIALIZE  shift 124
+	FREE  shift 125
+	NULLVAL  shift 126
+	READ  shift 127
+	WRITE  shift 128
+	IF  shift 129
+	ENDIF  shift 280
+	WHILE  shift 130
+	BREAK  shift 131
+	CONT  shift 132
+	RETURN  shift 133
+	SELF  shift 134
+	DELETE  shift 135
+	NEW  shift 136
+	'('  shift 137
+	.  error
+
+	expr  goto 138
+	Stmt  goto 198
+	InputStmt  goto 141
+	OutputStmt  goto 142
+	AsgStmt  goto 143
+	IfStmt  goto 144
+	WhileStmt  goto 145
+	BreakStmt  goto 146
+	ContinueStmt  goto 147
+	FreeStmt  goto 148
+	Retstmt  goto 149
+	Field  goto 150
+	FieldFunction  goto 151
+
+
+state 276
+	IfStmt : IF expr THEN Slist ENDIF COLON .  (80)
+
+	.  reduce 80
+
+
+state 277
+	WhileStmt : WHILE expr DO Slist ENDWHILE COLON .  (81)
+
+	.  reduce 81
+
+
+state 278
+	FieldFunction : SELF '.' ID '(' ArgList ')' .  (29)
+
+	.  reduce 29
+
+
+state 279
+	FieldFunction : Field '.' ID '(' ArgList ')' .  (31)
+
+	.  reduce 31
+
+
+state 280
+	IfStmt : IF expr THEN Slist ELSE Slist ENDIF . COLON  (79)
+
+	COLON  shift 281
+	.  error
+
+
+state 281
+	IfStmt : IF expr THEN Slist ELSE Slist ENDIF COLON .  (79)
+
+	.  reduce 79
+
+
+60 terminals, 51 nonterminals
+126 grammar rules, 282 states
+
+grammar parser grammar
+symbol# value# symbol
+     0      0  $end
+     1    256  error
+     2    257  NUM
+     3    258  END
+     4    259  ID
+     5    260  STRING_TYPE
+     6    261  INT
+     7    262  STR
+     8    263  ALLOC
+     9    264  INITIALIZE
+    10    265  FREE
+    11    266  NULLVAL
+    12    267  PLUS
+    13    268  MINUS
+    14    269  MUL
+    15    270  DIV
+    16    271  MOD
+    17    272  SPACE
+    18    273  NEWLINE
+    19    274  ASSG
+    20    275  READ
+    21    276  WRITE
+    22    277  START
+    23    278  COLON
+    24    279  LT
+    25    280  LE
+    26    281  GT
+    27    282  GE
+    28    283  EQ
+    29    284  NE
+    30    285  OR
+    31    286  AND
+    32    287  IF
+    33    288  THEN
+    34    289  ELSE
+    35    290  ENDIF
+    36    291  WHILE
+    37    292  ENDWHILE
+    38    293  DO
+    39    294  BREAK
+    40    295  CONT
+    41    296  DECL
+    42    297  ENDDECL
+    43    298  COMMA
+    44    299  MAIN
+    45    300  RETURN
+    46    301  TYPE
+    47    302  ENDTYPE
+    48    303  SELF
+    49    304  DELETE
+    50    305  NEW
+    51    306  CLASS
+    52    307  ENDCLASS
+    53    123  '{'
+    54    125  '}'
+    55     40  '('
+    56     41  ')'
+    57     46  '.'
+    58     91  '['
+    59     93  ']'
+    60    308  $accept
+    61    309  program
+    62    310  expr
+    63    311  Slist
+    64    312  Stmt
+    65    313  InputStmt
+    66    314  OutputStmt
+    67    315  AsgStmt
+    68    316  IfStmt
+    69    317  WhileStmt
+    70    318  BreakStmt
+    71    319  ContinueStmt
+    72    320  FreeStmt
+    73    321  TypeName
+    74    322  String
+    75    323  TypeDefBlock
+    76    324  ClassdefBlock
+    77    325  GdeclBlock
+    78    326  FdefBlock
+    79    327  MainBlock
+    80    328  FieldDeclList
+    81    329  FieldDecl
+    82    330  TypeDefList
+    83    331  GdeclList
+    84    332  LdeclBlock
+    85    333  GidList
+    86    334  Gid
+    87    335  IdList
+    88    336  Fdef
+    89    337  Body
+    90    338  Retstmt
+    91    339  ArgList
+    92    340  Field
+    93    341  Type
+    94    342  ClassDefList
+    95    343  ClassDef
+    96    344  Cname
+    97    345  Fieldlists
+    98    346  Fld
+    99    347  MethodDecl
+   100    348  MDecl
+   101    349  MethodDefns
+   102    350  FieldFunction
+   103    351  TypeDef
+   104    352  ParamList
+   105    353  GDecl
+   106    354  GParamList
+   107    355  LDeclList
+   108    356  LDecl
+   109    357  Param
+   110    358  GParam

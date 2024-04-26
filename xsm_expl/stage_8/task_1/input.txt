@@ -1,0 +1,65 @@
+class
+    animal {
+        decl
+        str name;
+        int id;
+        int getId ();
+        str getName ();
+        int setName (str thisName);
+        enddecl
+        int getId (){
+            begin
+            return (self.id);
+            end
+        }
+        str getName (){
+            begin
+            write (self.name);
+            return (self.name);
+            end
+        }
+
+        int setName (str thisName){
+            begin
+            self.name = thisName;
+            return 0;
+            end
+        }
+    }
+    dog extends animal {
+        decl
+        int getId();
+        str bark();
+        enddecl
+        int getId (){
+            begin
+            return (self.id + 3);
+            end
+        }
+        str bark (){
+            begin
+            return ("bow");
+            end
+        }
+    }
+endclass
+
+decl
+    int glob1;
+    int glob2;
+    animal elephant1;
+    animal elephant2;
+    dog puppy;
+    str temp;
+enddecl
+
+int main (){
+    begin
+    elephant1 = new (animal);
+    glob1 = elephant1.setName ("jumbo");
+    temp = elephant1.getName();
+    elephant2 = elephant1;
+    puppy = new (dog);
+    return 0;
+    end
+}

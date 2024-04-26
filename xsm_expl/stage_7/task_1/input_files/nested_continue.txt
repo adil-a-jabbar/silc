@@ -1,0 +1,22 @@
+decl
+int outer, inner;
+enddecl
+
+begin
+outer=0;
+while (outer < 3) do
+    inner = 0;
+    while (inner < 3) do
+        inner = inner + 1;
+        if (inner == 2) then break;
+        endif;
+        write ("outer: ");
+        write (outer);
+        write ("inner: ");
+        write (inner);
+    endwhile;
+    outer = outer+1;
+    if (outer==2) then break;
+    endif;
+endwhile;
+end;
