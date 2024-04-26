@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "typetable.h": "c",
+        "typeinfo": "c",
+        "stdlib.h": "c"
+    }
+}
