@@ -45,5 +45,7 @@ struct CFieldlist * Class_FLookup (struct Classtable * cptr, char * name);
 struct Memberfunclist * Class_MLookup (struct Classtable * cptr, char * name);
 void classInherit (struct Classtable * child, struct Classtable * parent);
 void CMethodCopy (struct Classtable * cptr, struct Memberfunclist * method);
+int isNotChild (Classtable * child, Classtable * parent);
+int checkInheritance (Classtable *left, Classtable * right);
 
 #endif /* CLASSTABLE_H */

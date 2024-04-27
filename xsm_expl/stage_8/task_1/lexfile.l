@@ -52,7 +52,7 @@ minus [-]
 "str"       {yylval.no = makeIdNode(STR_TYPE_NODE, yytext); printf ("STR "); return STR;}
 {digit}+    {yylval.no = makeLeafNode (CONST, yytext, intType); printf ("NUM "); 
         return NUM;}
-[\"].*[\"]  {printf ("STRING "); yylval.no = makeLeafNode (CONST, yytext, strType); return STRING_TYPE;}
+\"[^"]*\"  {printf ("STRING "); yylval.no = makeLeafNode (CONST, yytext, strType); return STRING_TYPE;}
 {identifier} {printf ("ID "); yylval.no = makeIdNode(IDENT, yytext); return ID;}
 "+" {printf ("PLUS "); return PLUS;}
 "-" {printf ("MINUS "); return MINUS;}

@@ -91,17 +91,28 @@ void CFieldInstall (struct Classtable * cptr, char * typename, char *name) {
 }
 
 void CMethodInstall (struct Classtable * cptr, char * typename, char *name) {
+    //no more than 8 functions
+    if (currFuncposition == 8){
+        char msg[40];
+        sprintf(msg, "\n%s: too many methods\n", cptr->name);
+        yyerror(msg);
+    }
     //check if method already exists
     struct Memberfunclist * temp3 = cptr->Vfuncptr;
-    if (cptr->Parentptr != NULL){
         while (temp3 != NULL){
             if (strcmp (temp3->name, name) == 0) {  //already exists
-                temp3->Flabel = getFlabel();    //override
-                return;
+                if (cptr->Parentptr != NULL){
+                    temp3->Flabel = getFlabel();    //override
+                    return;
+                }
+                else{
+                    char msg[40];
+                    sprintf(msg, "\nmultiple decl of method '%s'\n", name);
+                    yyerror(msg);
+                }
             }
             temp3 = temp3->next;
         }
-    }
 
     struct Memberfunclist * temp = (Memberfunclist*) malloc (sizeof(Memberfunclist));
     if (TLookup(typename) != NULL){
@@ -245,6 +256,9 @@ struct CFieldlist * Class_FLookup (struct Classtable * cptr, char * name) {
 }
 
 struct Memberfunclist * Class_MLookup (struct Classtable * cptr, char * name) {
+    if (cptr == NULL) {
+        return NULL;
+    }
     struct Memberfunclist * temp = cptr->Vfuncptr;
     while (temp != NULL){
         if (strcmp (temp->name, name) == 0) {
@@ -302,4 +316,26 @@ void CMethodCopy (struct Classtable * cptr, struct Memberfunclist * method) {
         temp2->next = temp;
     }
     printf ("copied method %s in methodlist of class %s\n", temp->name, cptr->name);
+}
+
+int checkInheritance (Classtable *left, Classtable * right) {
+     if (right != left && (isNotChild (right, left))){
+        return 1;
+     }
+
+     else return 0;
+}
+
+int isNotChild (Classtable * child, Classtable * parent) {
+    if (child->Parentptr == NULL) {
+        return 1;
+    }
+
+    while (child->Parentptr != NULL)  {
+        if (child->Parentptr == parent){
+            return 0;
+        }
+        child = child->Parentptr;
+    }
+    return 1;
 }

@@ -102,12 +102,12 @@ CFdef: INT ID '(' CParamList ')' '{' LdeclBlock Body '}' {strcpy (currMethod, $2
         | ID ID '(' CParamList ')' '{' LdeclBlock Body '}' {strcpy (currMethod, $2->varName); $8->nodeType = C_FUN_DEF; filePointer = fopen ("executable.xsm", "a"); codeGen ($8, filePointer); fclose (filePointer); Lhead = NULL;}
         | ID ID '(' CParamList ')' '{' Body '}' {strcpy (currMethod, $2->varName); $7->nodeType = C_FUN_DEF; filePointer = fopen ("executable.xsm", "a"); codeGen ($7, filePointer); fclose (filePointer); Lhead = NULL;};
 
-FieldFunction: Field '.' ID '(' ArgList ')' {$$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3);}
-            | Field '.' ID '(' ')' {$$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3);}
-            | ID '.' ID '(' ArgList ')' {$1->Gentry =  setGentry($1->varName); $1->Ctype = $1->Gentry->Ctype; $$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3);}
-            | ID '.' ID '(' ')' {$1->Gentry =  setGentry($1->varName); $1->Ctype = $1->Gentry->Ctype; $$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3);}
-            | SELF '.' ID '(' ArgList ')' {$1->Ctype = CLookup(currClass); $$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3);}
-            | SELF '.' ID '(' ')' {$1->Ctype = CLookup(currClass); $$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3);};
+FieldFunction: Field '.' ID '(' ArgList ')' {$$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3); strcpy (currClass, $1->Ctype->name);}
+            | Field '.' ID '(' ')' {$$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3); strcpy (currClass, $1->Ctype->name);}
+            | ID '.' ID '(' ArgList ')' {$1->Gentry =  setGentry($1->varName); $1->Ctype = $1->Gentry->Ctype; $$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3); strcpy (currClass, $1->Ctype->name);}
+            | ID '.' ID '(' ')' {$1->Gentry =  setGentry($1->varName); $1->Ctype = $1->Gentry->Ctype; $$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3); strcpy (currClass, $1->Ctype->name);}
+            | SELF '.' ID '(' ArgList ')' {doesLSymbolExist ($1->varName); $1->Ctype = CLookup(currClass); $$ = makeCFunCallNode (C_FUN_CALL, $1, $5, $3);}
+            | SELF '.' ID '(' ')' {doesLSymbolExist ($1->varName); $1->Ctype = CLookup(currClass); $$ = makeCFunCallNode (C_FUN_CALL, $1, NULL, $3);};
 
 GdeclBlock: DECL GdeclList ENDDECL {printf ("GdeclDone\n");} 
             | DECL ENDDECL {} | {};
@@ -214,8 +214,8 @@ expr: expr PLUS expr {$$=makeOperatorNode (OP, '+', $1, $3);}
 | NULLVAL           {$$=$1;}  //add lsymbollookup for array too
 | ID                {$$=$1; if (LSymbolLookup ($1->varName) == NULL) {$1->Gentry = setGentry ($1->varName); $1->type = $1->Gentry->type; $1->Ctype = $1->Gentry->Ctype;} else {$1->type = (LSymbolLookup ($1->varName))->type;}}  //add lsymbollookup for array too
 | ID '[' expr ']'   {if ($3->type != intType) yyerror("\ntype error !\n"); $1->Gentry = setGentry ($1->varName); $1->type = $1->Gentry->type; $1->left = $3; $$=$1;}
-| ID '(' ')'        {$1->Gentry = setGentry ($1->varName); funArgsCheck($1->Gentry, argsHead[argsTop]); argsTop--; $1->type = $1->Gentry->type; $1->mid = NULL; $$=$1; $$->nodeType=FUN_CALL;}
-| ID '(' ArgList ')'{$1->Gentry = setGentry ($1->varName); funArgsCheck($1->Gentry, argsHead[argsTop]); $1->type = $1->Gentry->type; $1->mid = argsHead[argsTop]; $$=$1; argsHead[argsTop] = NULL; argsTail[argsTop] = NULL; argsTop--; $$->nodeType=FUN_CALL;}
+| ID '(' ')'        {doesTypeExist($1->varName); $1->Gentry = setGentry ($1->varName); funArgsCheck($1->Gentry, argsHead[argsTop]); argsTop--; $1->type = $1->Gentry->type; $1->mid = NULL; $$=$1; $$->nodeType=FUN_CALL;}
+| ID '(' ArgList ')'{doesTypeExist($1->varName); $1->Gentry = setGentry ($1->varName); funArgsCheck($1->Gentry, argsHead[argsTop]); $1->type = $1->Gentry->type; $1->mid = argsHead[argsTop]; $$=$1; argsHead[argsTop] = NULL; argsTail[argsTop] = NULL; argsTop--; $$->nodeType=FUN_CALL;}
 | Field {$$ = $1;}
 | ALLOC '(' ')' {$1 = makeAllocNode (ALLOC_NODE, NULL); $$ = $1;}
 | INITIALIZE '(' ')' {$1 = makeAllocNode (INITIALIZE_NODE, NULL); $$ = $1;}
@@ -251,6 +251,7 @@ Field: Field '.' ID {
                     $$->Ctype = $3->Ctype;
                 }
     | SELF '.' ID {
+                        doesLSymbolExist ($1->varName);
                         $1->Ctype = CLookup (currClass);
                         $1->type = NULL;
                         $$ = makeFieldNode (FIELD_NODE, $1, $3);

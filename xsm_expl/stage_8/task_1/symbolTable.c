@@ -53,6 +53,8 @@ struct Gsymbol * Ginstall (char * name, struct Typetable * type, struct Classtab
         temp->paramlist = paramList;
     }
 
+    temp->next = NULL;
+
     if (Ghead == NULL) { 
         Ghead = temp;
         Gtail = temp;
@@ -131,6 +133,19 @@ struct Lsymbol * LSymbolLookup (char *name){
         temp=temp->next;
     }
     return NULL;
+}
+
+void doesLSymbolExist (char *name) {
+    struct Lsymbol * temp = Lhead;
+    while (temp != NULL) {
+        if (strcmp (name, temp->name) == 0){
+            return;
+        }
+        temp=temp->next;
+    }
+    char msg[100];
+    sprintf (msg, "\nerror: '%s' unknown\n", name);
+    yyerror (msg);
 }
 
 void printParamList(struct Paramstruct * paramlist){

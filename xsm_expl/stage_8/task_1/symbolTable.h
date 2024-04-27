@@ -38,5 +38,6 @@ struct Gsymbol *Ginstall(char *name, struct Typetable * type, struct Classtable 
 struct Lsymbol *Linstall(char *name, char * typename, int binding);
 void checkNameEquivalence(char *name);
 void insertParamList(char *varName, struct Typetable * type);
+void doesLSymbolExist (char *name);
 
 #endif /* SYMBOLTABLE_H */

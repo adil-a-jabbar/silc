@@ -56,7 +56,25 @@ struct tnode * makeOperatorNode (int nodeType, char op, struct tnode * left, str
 
 struct tnode * makeStmtNode (int nodeType, struct tnode * left, struct tnode * right, struct tnode * mid){
     //typechecking
-    if (right != NULL && right->nodeType == ALLOC_NODE){
+    if (right != NULL && nodeType==ASG_STMT){
+        if (right->Ctype != NULL){
+            if (left->Ctype == NULL) {
+                char msg[60];
+                sprintf(msg, "\ntype error\n");
+                yyerror(msg);
+            }
+            if (checkInheritance (left->Ctype, right->Ctype)) {
+                char msg[60];
+                sprintf(msg, "\ncannot assign var of class '%s' to class '%s'\n", left->Ctype->name, right->Ctype->name);
+                yyerror(msg);
+            }
+            left->Ctype = right->Ctype;
+        }
+        if (right->type != left->type) {
+            char msg[60];
+            sprintf(msg, "\ntype error\n");
+            yyerror(msg);
+        }
         right->type = left->type;
     }
 
@@ -84,6 +102,13 @@ struct tnode * makeStmtNode (int nodeType, struct tnode * left, struct tnode * r
         }
     }
 
+    if (nodeType == IFNODE || nodeType == IFELSE) {
+        if (left->type != boolType){
+            char msg[40];
+            sprintf(msg, "\ntype error!\n");
+            yyerror(msg);
+        }
+    }
 
 
     // if ((nodeType == ASG_STMT && (right->type!=NULL && left->type!=NULL && right->type != nullType && left->type != right->type)) | (nodeType == ASG_STMT && (left->nodeType != IDENT && left->nodeType != FIELD_NODE) )){
@@ -404,6 +429,7 @@ int codeGen (struct tnode *t, FILE * filePointer){
         }
         regUseStack [++regUseStackTop] = currReg;
         tempReg = codeGen (t->left, filePointer);
+        fprintf (filePointer, "MOV R%d, [R%d]\n", tempReg, tempReg);  
         fprintf (filePointer, "PUSH R%d //self\n", tempReg);    //push self
         freeReg ();
         if (t->mid != NULL){    //push arguments
@@ -418,7 +444,13 @@ int codeGen (struct tnode *t, FILE * filePointer){
             }
         }
         fprintf (filePointer, "PUSH R0 //retVal\n"); //space for return value
-        fprintf (filePointer, "CALL F%d\n", temp->Flabel); //call statement
+        int varReg = codeGen (t->left, filePointer);
+        fprintf (filePointer, "ADD R%d, 1\n", varReg);
+        fprintf (filePointer, "MOV R%d, [R%d]\n", varReg, varReg);
+        fprintf (filePointer, "ADD R%d, %d\n", varReg, Class_MLookup(t->left->Ctype, t->right->varName)->Funcposition);
+        fprintf (filePointer, "MOV R%d, [R%d]\n", varReg, varReg);
+        fprintf (filePointer, "CALL R%d\n", varReg); //call statement
+        freeReg ();
         int resultReg = getReg ();
         tempReg = getReg ();
         fprintf (filePointer, "POP R%d //store result\n", resultReg);  //store result in result register
@@ -584,7 +616,7 @@ int codeGen (struct tnode *t, FILE * filePointer){
         }
 
         if (t->left->Ctype != NULL && t->right->nodeType == ALLOC_NODE) {   //new object allocation -> set vft 
-            int vftBase = 4096 + 8*(t->left->Ctype->Class_index);
+            int vftBase = 4096 + 8*(t->right->Ctype->Class_index);
             fprintf (filePointer, "ADD R%d, 1\n", tempReg);
             fprintf (filePointer, "MOV [R%d], %d //set VFT\n", tempReg, vftBase);
         }

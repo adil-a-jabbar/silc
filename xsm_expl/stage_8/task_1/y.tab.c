@@ -1046,7 +1046,7 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 273 "yaccfile.y"
+#line 274 "yaccfile.y"
 
 void yyerror(char * msg){
     printf (ANSI_COLOR_RED "\nerror in line %d: %s\n" ANSI_COLOR_RESET, yylineno, msg);
@@ -1968,32 +1968,32 @@ case 49:
 break;
 case 50:
 #line 105 "yaccfile.y"
-	{yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no);}
+	{yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no); strcpy (currClass, yystack.l_mark[-5].no->Ctype->name);}
 #line 1973 "y.tab.c"
 break;
 case 51:
 #line 106 "yaccfile.y"
-	{yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no);}
+	{yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no); strcpy (currClass, yystack.l_mark[-4].no->Ctype->name);}
 #line 1978 "y.tab.c"
 break;
 case 52:
 #line 107 "yaccfile.y"
-	{yystack.l_mark[-5].no->Gentry =  setGentry(yystack.l_mark[-5].no->varName); yystack.l_mark[-5].no->Ctype = yystack.l_mark[-5].no->Gentry->Ctype; yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no);}
+	{yystack.l_mark[-5].no->Gentry =  setGentry(yystack.l_mark[-5].no->varName); yystack.l_mark[-5].no->Ctype = yystack.l_mark[-5].no->Gentry->Ctype; yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no); strcpy (currClass, yystack.l_mark[-5].no->Ctype->name);}
 #line 1983 "y.tab.c"
 break;
 case 53:
 #line 108 "yaccfile.y"
-	{yystack.l_mark[-4].no->Gentry =  setGentry(yystack.l_mark[-4].no->varName); yystack.l_mark[-4].no->Ctype = yystack.l_mark[-4].no->Gentry->Ctype; yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no);}
+	{yystack.l_mark[-4].no->Gentry =  setGentry(yystack.l_mark[-4].no->varName); yystack.l_mark[-4].no->Ctype = yystack.l_mark[-4].no->Gentry->Ctype; yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no); strcpy (currClass, yystack.l_mark[-4].no->Ctype->name);}
 #line 1988 "y.tab.c"
 break;
 case 54:
 #line 109 "yaccfile.y"
-	{yystack.l_mark[-5].no->Ctype = CLookup(currClass); yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no);}
+	{doesLSymbolExist (yystack.l_mark[-5].no->varName); yystack.l_mark[-5].no->Ctype = CLookup(currClass); yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-5].no, yystack.l_mark[-1].no, yystack.l_mark[-3].no);}
 #line 1993 "y.tab.c"
 break;
 case 55:
 #line 110 "yaccfile.y"
-	{yystack.l_mark[-4].no->Ctype = CLookup(currClass); yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no);}
+	{doesLSymbolExist (yystack.l_mark[-4].no->varName); yystack.l_mark[-4].no->Ctype = CLookup(currClass); yyval.no = makeCFunCallNode (C_FUN_CALL, yystack.l_mark[-4].no, NULL, yystack.l_mark[-2].no);}
 #line 1998 "y.tab.c"
 break;
 case 56:
@@ -2373,12 +2373,12 @@ case 131:
 break;
 case 132:
 #line 217 "yaccfile.y"
-	{yystack.l_mark[-2].no->Gentry = setGentry (yystack.l_mark[-2].no->varName); funArgsCheck(yystack.l_mark[-2].no->Gentry, argsHead[argsTop]); argsTop--; yystack.l_mark[-2].no->type = yystack.l_mark[-2].no->Gentry->type; yystack.l_mark[-2].no->mid = NULL; yyval.no=yystack.l_mark[-2].no; yyval.no->nodeType=FUN_CALL;}
+	{doesTypeExist(yystack.l_mark[-2].no->varName); yystack.l_mark[-2].no->Gentry = setGentry (yystack.l_mark[-2].no->varName); funArgsCheck(yystack.l_mark[-2].no->Gentry, argsHead[argsTop]); argsTop--; yystack.l_mark[-2].no->type = yystack.l_mark[-2].no->Gentry->type; yystack.l_mark[-2].no->mid = NULL; yyval.no=yystack.l_mark[-2].no; yyval.no->nodeType=FUN_CALL;}
 #line 2378 "y.tab.c"
 break;
 case 133:
 #line 218 "yaccfile.y"
-	{yystack.l_mark[-3].no->Gentry = setGentry (yystack.l_mark[-3].no->varName); funArgsCheck(yystack.l_mark[-3].no->Gentry, argsHead[argsTop]); yystack.l_mark[-3].no->type = yystack.l_mark[-3].no->Gentry->type; yystack.l_mark[-3].no->mid = argsHead[argsTop]; yyval.no=yystack.l_mark[-3].no; argsHead[argsTop] = NULL; argsTail[argsTop] = NULL; argsTop--; yyval.no->nodeType=FUN_CALL;}
+	{doesTypeExist(yystack.l_mark[-3].no->varName); yystack.l_mark[-3].no->Gentry = setGentry (yystack.l_mark[-3].no->varName); funArgsCheck(yystack.l_mark[-3].no->Gentry, argsHead[argsTop]); yystack.l_mark[-3].no->type = yystack.l_mark[-3].no->Gentry->type; yystack.l_mark[-3].no->mid = argsHead[argsTop]; yyval.no=yystack.l_mark[-3].no; argsHead[argsTop] = NULL; argsTail[argsTop] = NULL; argsTop--; yyval.no->nodeType=FUN_CALL;}
 #line 2383 "y.tab.c"
 break;
 case 134:
@@ -2453,6 +2453,7 @@ break;
 case 143:
 #line 253 "yaccfile.y"
 	{
+                        doesLSymbolExist (yystack.l_mark[-2].no->varName);
                         yystack.l_mark[-2].no->Ctype = CLookup (currClass);
                         yystack.l_mark[-2].no->type = NULL;
                         yyval.no = makeFieldNode (FIELD_NODE, yystack.l_mark[-2].no, yystack.l_mark[0].no);
@@ -2461,34 +2462,34 @@ case 143:
                         yyval.no->type = yystack.l_mark[0].no->type;
                         yyval.no->Ctype = yystack.l_mark[0].no->Ctype;
                 }
-#line 2465 "y.tab.c"
+#line 2466 "y.tab.c"
 break;
 case 144:
-#line 263 "yaccfile.y"
+#line 264 "yaccfile.y"
 	{argsTail[argsTop]->mid=yystack.l_mark[0].no; argsTail[argsTop]=argsTail[argsTop]->mid; argsTail[argsTop]->mid = NULL;}
-#line 2470 "y.tab.c"
+#line 2471 "y.tab.c"
 break;
 case 145:
-#line 264 "yaccfile.y"
+#line 265 "yaccfile.y"
 	{argsTop++; yyval.no=yystack.l_mark[0].no; argsHead[argsTop] = yyval.no; argsTail[argsTop] = yyval.no; argsTail[argsTop]->mid = NULL;}
-#line 2475 "y.tab.c"
+#line 2476 "y.tab.c"
 break;
 case 146:
-#line 267 "yaccfile.y"
-	{yyval.no = makeTreeNode (TYPE_NODE, NULL, -1, NULL, '0', yystack.l_mark[0].no->varName, NULL, NULL, NULL, NULL); strcpy (type, yystack.l_mark[0].no->varName); printf ("type set to %s\n", type);}
-#line 2480 "y.tab.c"
-break;
-case 147:
 #line 268 "yaccfile.y"
 	{yyval.no = makeTreeNode (TYPE_NODE, NULL, -1, NULL, '0', yystack.l_mark[0].no->varName, NULL, NULL, NULL, NULL); strcpy (type, yystack.l_mark[0].no->varName); printf ("type set to %s\n", type);}
-#line 2485 "y.tab.c"
+#line 2481 "y.tab.c"
 break;
-case 148:
+case 147:
 #line 269 "yaccfile.y"
 	{yyval.no = makeTreeNode (TYPE_NODE, NULL, -1, NULL, '0', yystack.l_mark[0].no->varName, NULL, NULL, NULL, NULL); strcpy (type, yystack.l_mark[0].no->varName); printf ("type set to %s\n", type);}
-#line 2490 "y.tab.c"
+#line 2486 "y.tab.c"
 break;
-#line 2492 "y.tab.c"
+case 148:
+#line 270 "yaccfile.y"
+	{yyval.no = makeTreeNode (TYPE_NODE, NULL, -1, NULL, '0', yystack.l_mark[0].no->varName, NULL, NULL, NULL, NULL); strcpy (type, yystack.l_mark[0].no->varName); printf ("type set to %s\n", type);}
+#line 2491 "y.tab.c"
+break;
+#line 2493 "y.tab.c"
     default:
         break;
     }
